@@ -130,3 +130,13 @@ func update_Field_View():
 				var newTile = tile.instance()
 				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
 				tilesView.add_child(newTile)
+
+func _unhandled_input(event):
+	if event is InputEventKey:
+		if event.pressed:
+			if event.scancode == KEY_LEFT:
+				figurePosition.x -= 1
+				update_Figure_View()
+			elif event.scancode == KEY_RIGHT:
+				figurePosition.x += 1
+				update_Figure_View()
