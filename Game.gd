@@ -87,6 +87,9 @@ func new_Figure():
 	figurePosition = initialFigurePosition
 
 func _on_Timer_timeout():
+	move_Down()
+
+func move_Down():
 	figurePosition.y += 1
 	check_Ground()
 	update_Figure_View()
@@ -137,3 +140,5 @@ func _unhandled_input(event):
 				if figurePosition.x < field[0].size() - figure[0].size():
 					figurePosition.x += 1
 					update_Figure_View()
+			elif event.scancode == KEY_DOWN:
+				move_Down()
