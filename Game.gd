@@ -65,19 +65,26 @@ var field = [
 ]
 
 var figure = []
+var nextFigure = []
 const initialFigurePosition = Vector2(3, -4)
 var figurePosition = initialFigurePosition
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	update_Figure_View_Pos()
+	pick_Next_Figure()
 	new_Figure()
 	$Timer.start(1)
 
 func new_Figure():
-	figure = possibleFigures[randi() % possibleFigures.size()]
+	figure = nextFigure
+	pick_Next_Figure()
 	update_Figure_View()
 	figurePosition = initialFigurePosition
+
+func pick_Next_Figure():
+	nextFigure = possibleFigures[randi() % possibleFigures.size()]
+	update_Radar_View()
 
 func _on_Timer_timeout():
 	move_Down()
@@ -103,6 +110,16 @@ func update_Figure_View():
 				var newTile = tile.instance()
 				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
 				figureView.add_child(newTile)
+
+func update_Radar_View():
+	for n in $Radar.get_children():
+		n.free()
+	for y in nextFigure.size():
+		for x in nextFigure[y].size():
+			if nextFigure[y][x] == 1:
+				var newTile = tile.instance()
+				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
+				$Radar.add_child(newTile)
 
 func stop_Figure():
 	for y in figure.size():
