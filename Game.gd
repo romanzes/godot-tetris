@@ -7,6 +7,45 @@ onready var tilesView = $Field/Tiles
 
 const tileSize = 20
 
+const possibleFigures = [
+	[
+		[0, 0, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 1, 0],
+		[0, 0, 1, 0]
+	],
+	[
+		[0, 0, 0, 0],
+		[0, 1, 1, 0],
+		[0, 0, 1, 0],
+		[0, 0, 1, 0]
+	],
+	[
+		[0, 0, 0, 0],
+		[0, 0, 1, 0],
+		[0, 1, 1, 1],
+		[0, 0, 0, 0]
+	],
+	[
+		[0, 0, 0, 0],
+		[0, 1, 1, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0]
+	],
+	[
+		[0, 0, 0, 0],
+		[0, 1, 1, 0],
+		[0, 1, 1, 0],
+		[0, 0, 0, 0]
+	],
+	[
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0],
+		[0, 1, 0, 0]
+	]
+]
+
 var field = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -30,25 +69,27 @@ var field = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]
 
-var figure = [
-	[0, 1, 0, 0],
-	[0, 1, 1, 0],
-	[0, 0, 1, 0],
-	[0, 0, 0, 0]
-]
+var figure = []
 const initialFigurePosition = Vector2(3, -4)
 var figurePosition = initialFigurePosition
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	update_Figure_View()
+	new_Figure()
+	$Timer.start(1)
+
+func new_Figure():
+	figure = possibleFigures[randi() % possibleFigures.size()]
+	for n in figureView.get_children():
+		n.free()
 	for y in figure.size():
 		for x in figure[y].size():
 			if figure[y][x] == 1:
 				var newTile = tile.instance()
 				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
 				figureView.add_child(newTile)
-	$Timer.start(1)
+	figurePosition = initialFigurePosition
 
 func _on_Timer_timeout():
 	figurePosition.y += 1
@@ -78,7 +119,7 @@ func stop_Figure():
 			if figure[y][x] == 1:
 				field[figurePosition.y + y][figurePosition.x + x] = 1
 	update_Field_View()
-	figurePosition = initialFigurePosition
+	new_Figure()
 
 func update_Field_View():
 	for n in tilesView.get_children():
