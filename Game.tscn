@@ -25,6 +25,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Tiles" type="Control" parent="Field"]
+margin_right = 40.0
+margin_bottom = 40.0
+
 [node name="Figure" type="Control" parent="Field"]
 margin_right = 80.0
 margin_bottom = 80.0
