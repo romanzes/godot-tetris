@@ -64,6 +64,7 @@ func check_Ground():
 			if figure[y][x] == 1:
 				if figurePosition.y + y + 1 == field.size():
 					stop_Figure()
+					return
 
 func stop_Figure():
 	for y in figure.size():
