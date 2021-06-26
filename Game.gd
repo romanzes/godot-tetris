@@ -126,8 +126,24 @@ func stop_Figure():
 		for x in figure[y].size():
 			if figure[y][x] == 1:
 				field[figurePosition.y + y][figurePosition.x + x] = 1
+	remove_Lines()
 	update_Field_View()
 	new_Figure()
+
+func remove_Lines():
+	for y in field.size():
+		var fullLine = true
+		for x in field[y].size():
+			if field[y][x] == 0:
+				fullLine = false
+				break
+		if fullLine:
+			remove_Line(y)
+
+func remove_Line(lineNumber):
+	for y in range(lineNumber, 1, -1):
+		for x in field[y].size():
+			field[y][x] = field[y - 1][x]
 
 func update_Field_View():
 	for n in tilesView.get_children():
