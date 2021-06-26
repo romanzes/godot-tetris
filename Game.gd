@@ -60,9 +60,15 @@ func update_Figure_View():
 
 func check_Ground():
 	for y in figure.size():
+		var rowBelow = figurePosition.y + y + 1
+		if rowBelow < 0:
+			continue
 		for x in figure[y].size():
 			if figure[y][x] == 1:
-				if figurePosition.y + y + 1 == field.size():
+				if rowBelow == field.size():
+					stop_Figure()
+					return
+				if field[rowBelow][figurePosition.x + x] == 1:
 					stop_Figure()
 					return
 
