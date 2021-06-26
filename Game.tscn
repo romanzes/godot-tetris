@@ -35,11 +35,14 @@ __meta__ = {
 [node name="Radar" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 250.0
+margin_left = 247.0
 margin_top = 25.0
-margin_right = -20.0
+margin_right = -23.0
 margin_bottom = -345.0
 color = Color( 0.345098, 0.258824, 0.258824, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Timer" type="Timer" parent="."]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
