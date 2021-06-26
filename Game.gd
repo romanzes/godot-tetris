@@ -90,26 +90,16 @@ func _on_Timer_timeout():
 	move_Down()
 
 func move_Down():
-	figurePosition.y += 1
-	check_Ground()
+	var newPosition = figurePosition
+	newPosition.y += 1
+	if is_Allowed(figure, newPosition):
+		figurePosition = newPosition
+	else:
+		stop_Figure()
 	update_Figure_View()
 
 func update_Figure_View():
 	figureView.rect_position = Vector2(figurePosition.x * tileSize, figurePosition.y * tileSize)
-
-func check_Ground():
-	for y in figure.size():
-		var rowBelow = figurePosition.y + y + 1
-		if rowBelow < 0:
-			continue
-		for x in figure[y].size():
-			if figure[y][x] == 1:
-				if rowBelow == field.size():
-					stop_Figure()
-					return
-				if field[rowBelow][figurePosition.x + x] == 1:
-					stop_Figure()
-					return
 
 func stop_Figure():
 	for y in figure.size():
@@ -133,12 +123,31 @@ func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.scancode == KEY_LEFT:
-				if figurePosition.x > 0:
-					figurePosition.x -= 1
+				var newPosition = figurePosition
+				newPosition.x -= 1
+				if is_Allowed(figure, newPosition):
+					figurePosition = newPosition
 					update_Figure_View()
 			elif event.scancode == KEY_RIGHT:
-				if figurePosition.x < field[0].size() - figure[0].size():
-					figurePosition.x += 1
+				var newPosition = figurePosition
+				newPosition.x += 1
+				if is_Allowed(figure, newPosition):
+					figurePosition = newPosition
 					update_Figure_View()
 			elif event.scancode == KEY_DOWN:
 				move_Down()
+
+func is_Allowed(fig, position):
+	for y in fig.size():
+		for x in fig[y].size():
+			if fig[y][x] == 1:
+				var fieldPos = Vector2(position.x + x, position.y + y)
+				if fieldPos.x < 0:
+					return false
+				elif fieldPos.x >= field[0].size():
+					return false
+				elif fieldPos.y >= field.size():
+					return false
+				elif fieldPos.y >= 0 && field[fieldPos.y][fieldPos.x] == 1:
+					return false
+	return true
