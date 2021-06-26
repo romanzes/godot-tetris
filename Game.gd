@@ -70,20 +70,13 @@ var figurePosition = initialFigurePosition
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	update_Figure_View()
+	update_Figure_View_Pos()
 	new_Figure()
 	$Timer.start(1)
 
 func new_Figure():
 	figure = possibleFigures[randi() % possibleFigures.size()]
-	for n in figureView.get_children():
-		n.free()
-	for y in figure.size():
-		for x in figure[y].size():
-			if figure[y][x] == 1:
-				var newTile = tile.instance()
-				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
-				figureView.add_child(newTile)
+	update_Figure_View()
 	figurePosition = initialFigurePosition
 
 func _on_Timer_timeout():
@@ -96,10 +89,20 @@ func move_Down():
 		figurePosition = newPosition
 	else:
 		stop_Figure()
-	update_Figure_View()
+	update_Figure_View_Pos()
+
+func update_Figure_View_Pos():
+	figureView.rect_position = Vector2(figurePosition.x * tileSize, figurePosition.y * tileSize)
 
 func update_Figure_View():
-	figureView.rect_position = Vector2(figurePosition.x * tileSize, figurePosition.y * tileSize)
+	for n in figureView.get_children():
+		n.free()
+	for y in figure.size():
+		for x in figure[y].size():
+			if figure[y][x] == 1:
+				var newTile = tile.instance()
+				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
+				figureView.add_child(newTile)
 
 func stop_Figure():
 	for y in figure.size():
@@ -127,15 +130,20 @@ func _unhandled_input(event):
 				newPosition.x -= 1
 				if is_Allowed(figure, newPosition):
 					figurePosition = newPosition
-					update_Figure_View()
+					update_Figure_View_Pos()
 			elif event.scancode == KEY_RIGHT:
 				var newPosition = figurePosition
 				newPosition.x += 1
 				if is_Allowed(figure, newPosition):
 					figurePosition = newPosition
-					update_Figure_View()
+					update_Figure_View_Pos()
 			elif event.scancode == KEY_DOWN:
 				move_Down()
+			elif event.scancode == KEY_UP:
+				var newFigure = rotate()
+				if is_Allowed(newFigure, figurePosition):
+					figure = newFigure
+					update_Figure_View()
 
 func is_Allowed(fig, position):
 	for y in fig.size():
@@ -151,3 +159,13 @@ func is_Allowed(fig, position):
 				elif fieldPos.y >= 0 && field[fieldPos.y][fieldPos.x] == 1:
 					return false
 	return true
+
+func rotate():
+	var newFigure = []
+	newFigure.resize(figure[0].size())
+	for y in newFigure.size():
+		newFigure[y] = []
+		newFigure[y].resize(figure.size())
+		for x in newFigure[y].size():
+			newFigure[y][x] = figure[x][figure[0].size() - y - 1]
+	return newFigure
