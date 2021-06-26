@@ -130,8 +130,10 @@ func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.scancode == KEY_LEFT:
-				figurePosition.x -= 1
-				update_Figure_View()
+				if figurePosition.x > 0:
+					figurePosition.x -= 1
+					update_Figure_View()
 			elif event.scancode == KEY_RIGHT:
-				figurePosition.x += 1
-				update_Figure_View()
+				if figurePosition.x < field[0].size() - figure[0].size():
+					figurePosition.x += 1
+					update_Figure_View()
