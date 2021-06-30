@@ -20,10 +20,10 @@ func _ready():
 func draw():
 	if game.fieldUpdated:
 		update_Field_View()
-	if game.figureUpdated:
-		update_Figure_View()
 	if game.figurePositionUpdated:
 		update_Figure_View_Pos()
+	if game.figureUpdated:
+		update_Figure_View()
 	if game.radarUpdated:
 		update_Radar_View()
 
@@ -32,7 +32,13 @@ func _on_Timer_timeout():
 	draw()
 
 func update_Figure_View_Pos():
-	figureView.rect_position = Vector2(game.figurePosition.x * tileSize, game.figurePosition.y * tileSize)
+	if game.figureUpdated:
+		figureView.rect_position = Vector2(game.figurePosition.x * tileSize, game.figurePosition.y * tileSize)
+	else:
+		var newPosition = Vector2(game.figurePosition.x * tileSize, game.figurePosition.y * tileSize)
+		$Animator.interpolate_property(figureView, 'rect_position', figureView.rect_position, newPosition, 0.1, Tween.TRANS_QUAD, Tween.EASE_OUT)
+		$Animator.start()
+	game.figurePositionUpdated = false
 
 func update_Figure_View():
 	for n in figureView.get_children():

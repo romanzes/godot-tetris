@@ -28,6 +28,9 @@ __meta__ = {
 [node name="Tiles" type="Control" parent="Field"]
 margin_right = 40.0
 margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Figure" type="Control" parent="Field"]
 margin_right = 80.0
@@ -49,4 +52,6 @@ __meta__ = {
 }
 
 [node name="Timer" type="Timer" parent="."]
+
+[node name="Animator" type="Tween" parent="."]
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
