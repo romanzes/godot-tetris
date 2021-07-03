@@ -1,93 +1,69 @@
 extends ColorRect
 
 onready var tile = preload('res://Tile.tscn')
-onready var GameLogic = load('res://GameLogic.gd')
 
 onready var figureView = $Field/Figure
 onready var tilesView = $Field/Tiles
 
 const tileSize = 20
 
-var game
+onready var controller = $GameController
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	game = GameLogic.new()
-	game.init()
-	draw()
+	$GameController.init()
 	$Timer.start(1)
 
-func draw():
-	if game.fieldUpdated:
-		update_Field_View()
-	if game.figurePositionUpdated:
-		update_Figure_View_Pos()
-	if game.figureUpdated:
-		update_Figure_View()
-	if game.radarUpdated:
-		update_Radar_View()
-
 func _on_Timer_timeout():
-	game.move_Down()
-	draw()
+	controller.move_Down()
 
 func update_Figure_View_Pos():
-	if game.figureUpdated:
-		figureView.rect_position = Vector2(game.figurePosition.x * tileSize, game.figurePosition.y * tileSize)
-	else:
-		var newPosition = Vector2(game.figurePosition.x * tileSize, game.figurePosition.y * tileSize)
-		$Animator.interpolate_property(figureView, 'rect_position', figureView.rect_position, newPosition, 0.1, Tween.TRANS_QUAD, Tween.EASE_OUT)
-		$Animator.start()
-	game.figurePositionUpdated = false
+	var newPosition = Vector2(controller.figurePosition.x * tileSize, controller.figurePosition.y * tileSize)
+	$Animator.interpolate_property(figureView, 'rect_position', figureView.rect_position, newPosition, 0.1, Tween.TRANS_QUAD, Tween.EASE_OUT)
+	$Animator.start()
 
 func update_Figure_View():
+	figureView.rect_position = Vector2(controller.figurePosition.x * tileSize, controller.figurePosition.y * tileSize)
 	for n in figureView.get_children():
 		n.free()
-	var figure = game.figure
+	var figure = controller.figure
 	for y in figure.size():
 		for x in figure[y].size():
 			if figure[y][x] == 1:
 				var newTile = tile.instance()
 				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
 				figureView.add_child(newTile)
-	game.figureUpdated = false
 
 func update_Radar_View():
 	for n in $Radar.get_children():
 		n.free()
-	var nextFigure = game.nextFigure
+	var nextFigure = controller.nextFigure
 	for y in nextFigure.size():
 		for x in nextFigure[y].size():
 			if nextFigure[y][x] == 1:
 				var newTile = tile.instance()
 				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
 				$Radar.add_child(newTile)
-	game.radarUpdated = false
 
 func update_Field_View():
 	for n in tilesView.get_children():
 		n.free()
-	var field = game.field
+	var field = controller.field
 	for y in field.size():
 		for x in field[y].size():
 			if field[y][x] == 1:
 				var newTile = tile.instance()
 				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
 				tilesView.add_child(newTile)
-	game.fieldUpdated = false
 
 func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.scancode == KEY_LEFT:
-				game.move_Left()
-				draw()
+				controller.move_Left()
 			elif event.scancode == KEY_RIGHT:
-				game.move_Right()
-				draw()
+				controller.move_Right()
 			elif event.scancode == KEY_DOWN:
-				game.move_Down()
-				draw()
+				controller.move_Down()
 			elif event.scancode == KEY_UP:
-				game.do_Rotation()
-				draw()
+				controller.do_Rotation()

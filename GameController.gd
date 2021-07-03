@@ -1,9 +1,6 @@
-extends Object
+extends Node
 
-var fieldUpdated = false
-var figureUpdated = false
-var figurePositionUpdated = false
-var radarUpdated = false
+onready var view = get_node("/root/GameView")
 
 const possibleFigures = [
 	[
@@ -64,8 +61,8 @@ var field = [
 
 var figure = []
 var nextFigure = []
-const initialFigurePosition = Vector2(3, -4)
 var figurePosition = initialFigurePosition
+const initialFigurePosition = Vector2(3, -4)
 
 # Called when the node enters the scene tree for the first time.
 func init():
@@ -74,35 +71,35 @@ func init():
 
 func new_Figure():
 	figure = nextFigure
-	figureUpdated = true
+	view.update_Figure_View()
 	figurePosition = initialFigurePosition
-	figurePositionUpdated = true
+	view.update_Figure_View_Pos()
 	pick_Next_Figure()
 
 func pick_Next_Figure():
 	nextFigure = possibleFigures[randi() % possibleFigures.size()]
-	radarUpdated = true
+	view.update_Radar_View()
 
 func move_Left():
 	var newPosition = figurePosition
 	newPosition.x -= 1
 	if is_Allowed(figure, newPosition):
 		figurePosition = newPosition
-		figurePositionUpdated = true
+		view.update_Figure_View_Pos()
 
 func move_Right():
 	var newPosition = figurePosition
 	newPosition.x += 1
 	if is_Allowed(figure, newPosition):
 		figurePosition = newPosition
-		figurePositionUpdated = true
+		view.update_Figure_View_Pos()
 
 func move_Down():
 	var newPosition = figurePosition
 	newPosition.y += 1
 	if is_Allowed(figure, newPosition):
 		figurePosition = newPosition
-		figurePositionUpdated = true
+		view.update_Figure_View_Pos()
 	else:
 		stop_Figure()
 
@@ -110,7 +107,7 @@ func do_Rotation():
 	var newFigure = rotate_Figure()
 	if is_Allowed(newFigure, figurePosition):
 		figure = newFigure
-		figureUpdated = true
+		view.update_Figure_View()
 
 func stop_Figure():
 	for y in figure.size():
@@ -118,7 +115,7 @@ func stop_Figure():
 			if figure[y][x] == 1:
 				field[figurePosition.y + y][figurePosition.x + x] = 1
 	remove_Lines()
-	fieldUpdated = true
+	view.update_Field_View()
 	new_Figure()
 
 func remove_Lines():
