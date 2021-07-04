@@ -81,15 +81,33 @@ func update_Field_View():
 				field[y][x].rect_position = Vector2(x * tileSize, y * tileSize)
 				tilesView.add_child(field[y][x])
 
-func remove_Line(lineNumber):
-	for x in field[lineNumber].size():
-		if field[lineNumber][x] != null:
-			field[lineNumber][x].destroy()
-			yield(get_tree().create_timer(0.05), "timeout")
+func remove_Lines(lineNumbers):
 	$Timer.stop()
+	for l in lineNumbers:
+		for x in field[l].size():
+			if field[l][x] != null:
+				field[l][x].destroy()
+				yield(get_tree().create_timer(0.05), "timeout")
+		for y in range(0, l):
+			for x in field[y].size():
+				if field[y][x] != null:
+					field[y][x].shiftY += 1
 	yield(get_tree().create_timer(0.3), "timeout")
-	start_Timer()
+
+	for y in field.size():
+		for x in field[y].size():
+			var tile = field[y][x]
+			if tile != null:
+				var newPosition = Vector2(x * tileSize, (y + tile.shiftY) * tileSize)
+				tile.tween.interpolate_property(tile, 'rect_position', tile.rect_position, newPosition, 0.3, Tween.TRANS_QUAD, Tween.EASE_OUT)
+				tile.tween.start()
+	yield(get_tree().create_timer(0.3), "timeout")
 	update_Field_View()
+	start_Timer()
+
+func move_Tiles_Down():
+	$Timer.stop()
+	
 
 func _unhandled_input(event):
 	if event is InputEventKey:

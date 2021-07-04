@@ -56,7 +56,7 @@ var field = [
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
 
 var figure = []
@@ -120,6 +120,7 @@ func stop_Figure():
 	new_Figure()
 
 func remove_Lines():
+	var removedLines = []
 	for y in field.size():
 		var fullLine = true
 		for x in field[y].size():
@@ -128,12 +129,14 @@ func remove_Lines():
 				break
 		if fullLine:
 			remove_Line(y)
+			removedLines.append(y)
+	removedLines.invert()
+	view.remove_Lines(removedLines)
 
 func remove_Line(lineNumber):
 	for y in range(lineNumber, 1, -1):
 		for x in field[y].size():
 			field[y][x] = field[y - 1][x]
-	view.remove_Line(lineNumber)
 
 func is_Allowed(fig, position):
 	for y in fig.size():
