@@ -7,6 +7,29 @@ onready var tilesView = $Field/Tiles
 
 const tileSize = 20
 
+var field = [
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+	[null, null, null, null, null, null, null, null, null, null],
+]
+
 onready var controller = $GameController
 
 # Called when the node enters the scene tree for the first time.
@@ -48,13 +71,20 @@ func update_Radar_View():
 func update_Field_View():
 	for n in tilesView.get_children():
 		n.free()
-	var field = controller.field
-	for y in field.size():
-		for x in field[y].size():
-			if field[y][x] == 1:
-				var newTile = tile.instance()
-				newTile.rect_position = Vector2(x * tileSize, y * tileSize)
-				tilesView.add_child(newTile)
+	for y in controller.field.size():
+		for x in controller.field[y].size():
+			if controller.field[y][x] == 1:
+				field[y][x] = tile.instance()
+				field[y][x].rect_position = Vector2(x * tileSize, y * tileSize)
+				tilesView.add_child(field[y][x])
+
+func remove_Line(lineNumber):
+	for x in field[lineNumber].size():
+		if field[lineNumber][x] != null:
+			field[lineNumber][x].destroy()
+			yield(get_tree().create_timer(0.05), "timeout")
+	yield(get_tree().create_timer(0.3), "timeout")
+	update_Field_View()
 
 func _unhandled_input(event):
 	if event is InputEventKey:

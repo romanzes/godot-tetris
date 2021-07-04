@@ -68,6 +68,7 @@ const initialFigurePosition = Vector2(3, -4)
 func init():
 	pick_Next_Figure()
 	new_Figure()
+	view.update_Field_View()
 
 func new_Figure():
 	figure = nextFigure
@@ -114,8 +115,8 @@ func stop_Figure():
 		for x in figure[y].size():
 			if figure[y][x] == 1:
 				field[figurePosition.y + y][figurePosition.x + x] = 1
-	remove_Lines()
 	view.update_Field_View()
+	remove_Lines()
 	new_Figure()
 
 func remove_Lines():
@@ -132,6 +133,7 @@ func remove_Line(lineNumber):
 	for y in range(lineNumber, 1, -1):
 		for x in field[y].size():
 			field[y][x] = field[y - 1][x]
+	view.remove_Line(lineNumber)
 
 func is_Allowed(fig, position):
 	for y in fig.size():
