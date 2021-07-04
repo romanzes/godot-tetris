@@ -35,6 +35,9 @@ onready var controller = $GameController
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$GameController.init()
+	start_Timer()
+
+func start_Timer():
 	$Timer.start(1)
 
 func _on_Timer_timeout():
@@ -83,7 +86,9 @@ func remove_Line(lineNumber):
 		if field[lineNumber][x] != null:
 			field[lineNumber][x].destroy()
 			yield(get_tree().create_timer(0.05), "timeout")
+	$Timer.stop()
 	yield(get_tree().create_timer(0.3), "timeout")
+	start_Timer()
 	update_Field_View()
 
 func _unhandled_input(event):
