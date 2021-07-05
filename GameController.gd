@@ -72,9 +72,8 @@ func init():
 
 func new_Figure():
 	figure = nextFigure
-	view.update_Figure_View()
 	figurePosition = initialFigurePosition
-	view.update_Figure_View_Pos()
+	view.update_Figure_View()
 	pick_Next_Figure()
 
 func pick_Next_Figure():
@@ -116,8 +115,8 @@ func stop_Figure():
 			if figure[y][x] == 1:
 				field[figurePosition.y + y][figurePosition.x + x] = 1
 	view.update_Field_View()
-	remove_Lines()
 	new_Figure()
+	remove_Lines()
 
 func remove_Lines():
 	var removedLines = []

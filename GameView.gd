@@ -49,6 +49,7 @@ func update_Figure_View_Pos():
 	$Animator.start()
 
 func update_Figure_View():
+	$Animator.stop_all()
 	figureView.rect_position = Vector2(controller.figurePosition.x * tileSize, controller.figurePosition.y * tileSize)
 	for n in figureView.get_children():
 		n.free()
@@ -104,10 +105,6 @@ func remove_Lines(lineNumbers):
 	yield(get_tree().create_timer(0.3), "timeout")
 	update_Field_View()
 	start_Timer()
-
-func move_Tiles_Down():
-	$Timer.stop()
-	
 
 func _unhandled_input(event):
 	if event is InputEventKey:
